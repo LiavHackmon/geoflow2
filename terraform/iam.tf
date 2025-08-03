@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "flask_policy" {
   name        = "flask-app-policy"
-  description = "Allow EC2 to access S3, ECR, and write to CloudWatch Logs"
+  description = "Allow EC2 to access S3, ECR, SQS, and write to CloudWatch Logs"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -21,8 +21,7 @@ resource "aws_iam_policy" "flask_policy" {
         Action = [
           "ecr:GetAuthorizationToken",
           "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer",
-    	  "ecr:GetDownloadUrlForLayer"
+          "ecr:GetDownloadUrlForLayer"
         ],
         Resource = "*"
       },
@@ -34,6 +33,16 @@ resource "aws_iam_policy" "flask_policy" {
           "logs:PutLogEvents"
         ],
         Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl"
+        ],
+        Resource = aws_sqs_queue.geojson_queue.arn
       }
     ]
   })

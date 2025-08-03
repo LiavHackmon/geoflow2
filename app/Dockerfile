@@ -8,5 +8,7 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "main.py"]
+ENV AWS_REGION=eu-north-1
+
+CMD ["python", "listener.py"]
 
